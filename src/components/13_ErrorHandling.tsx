@@ -10,16 +10,9 @@ const testState = selector({
 });
 
 const FetchingComponent = () => {
-  const starships = useRecoilValue(testState);
+  useRecoilValue(testState);
 
-  return (
-    <ul>
-      {/* @ts-ignore */}
-      {starships.map((starship) => (
-        <li key={starship.name}>{starship.name}</li>
-      ))}
-    </ul>
-  );
+  return null;
 };
 
 const ErrorComponent = () => {
@@ -33,6 +26,9 @@ const FallbackComponent = ({ error }: { error: Error }) => {
     </div>
   );
 };
+
+// Selectors don't need any special error handling -
+// they can be handled with error boundaries just like components
 
 const ErrorHandling = () => {
   return (

@@ -2,14 +2,29 @@ import { useEffect, useRef } from "react";
 import {
   atom,
   useRecoilCallback,
+  useRecoilState,
   useRecoilValue,
-  useSetRecoilState,
 } from "recoil";
 
 const countState = atom({
   key: "count",
   default: 0,
 });
+
+const CountManager = () => {
+  const [count, setCount] = useRecoilState(countState);
+  const interval = useRef<NodeJS.Timer | undefined>();
+
+  useEffect(() => {
+    if (!interval.current) {
+      interval.current = setInterval(() => setCount((c) => c + 1), 1000);
+    }
+  }, [setCount]);
+
+  return (
+    <>The count is {count}</>
+  )
+}
 
 const UseRecoilValue = () => {
   const count = useRecoilValue(countState);
@@ -23,11 +38,11 @@ const UseRecoilValue = () => {
     <button
       onClick={() =>
         alert(
-          `The count is ${count} and the component rerendered ${renders.current} times`
+          `The count is ${count} and the component's render count is ${renders.current}`
         )
       }
     >
-      Get the count with useRecoilValue
+      Announce the count with useRecoilValue
     </button>
   );
 };
@@ -36,12 +51,9 @@ const UseRecoilCallback = () => {
   const getCount = useRecoilCallback(
     ({ snapshot }) =>
       () => {
+        // Learn more about loadables in 08_Loadable
         const count = snapshot.getLoadable(countState);
-        alert(
-          `The count is ${count.getValue()} and the component rerendered ${
-            renders.current
-          } times`
-        );
+        return count.getValue()
       },
     []
   );
@@ -52,24 +64,22 @@ const UseRecoilCallback = () => {
   console.log(`useRecoilCallback renders: ${renders.current}`);
 
   return (
-    <button onClick={() => getCount()}>
-      Get the count with useRecoilCallback
+    <button onClick={() => {
+      const count = getCount()
+      alert(
+        `The count is ${count} and the component's render count is ${renders.current}`
+      );
+    }}>
+      Announce the count with useRecoilCallback
     </button>
   );
 };
 
 const UseCallback = () => {
-  const setCount = useSetRecoilState(countState);
-  const interval = useRef<NodeJS.Timer | undefined>();
-
-  useEffect(() => {
-    if (!interval.current) {
-      interval.current = setInterval(() => setCount((c) => c + 1), 1000);
-    }
-  }, [setCount]);
-
   return (
     <>
+      <CountManager />
+      <hr />
       <UseRecoilValue />
       <UseRecoilCallback />
     </>

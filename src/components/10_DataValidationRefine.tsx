@@ -1,12 +1,24 @@
 import { Suspense } from "react";
 import { selector, useRecoilValue } from "recoil";
 
+// Learn more about refine at https://recoiljs.org/docs/refine/Introduction/
+import refine from "@recoiljs/refine";
+
+const Starship = refine.object({
+  name: refine.string(),
+});
+
+const StartshipResults = refine.object({
+  results: refine.array(Starship),
+});
+
 const starshipsState = selector({
-  key: "starshipsAsyncFetching",
+  key: "starshipsDataValidationRefine",
   get: async () => {
     const res = await fetch("https://swapi.dev/api/starships");
     const data = await res.json();
-    return data.results;
+    // No more typecasting - Refine will throw an error if the data is not of the expected structure
+    return refine.assertion(StartshipResults)(data).results;
   },
 });
 
@@ -15,7 +27,6 @@ const MyComponent = () => {
 
   return (
     <ul>
-      {/* @ts-ignore */}
       {starships.map((starship) => (
         <li key={starship.name}>{starship.name}</li>
       ))}
@@ -23,7 +34,7 @@ const MyComponent = () => {
   );
 };
 
-const AsyncFetching = () => {
+const DataValidationRefine = () => {
   return (
     <Suspense fallback={"Loading..."}>
       <MyComponent />
@@ -31,4 +42,4 @@ const AsyncFetching = () => {
   );
 };
 
-export default AsyncFetching;
+export default DataValidationRefine;

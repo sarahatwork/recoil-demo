@@ -7,21 +7,21 @@ const setTimeoutPromise = (timeout: number) =>
   });
 
 const oneSecondState = selector({
-  key: "oneSecond",
+  key: "debugging__oneSecond",
   get: async () => {
     await setTimeoutPromise(1_000);
   },
 });
 
 const fiveSecondState = selector({
-  key: "fiveSecond",
+  key: "debugging__fiveSecond",
   get: async () => {
     await setTimeoutPromise(5_000);
   },
 });
 
 const tenSecondState = selector({
-  key: "tenSecond",
+  key: "debugging__tenSecond",
   get: async () => {
     await setTimeoutPromise(10_000);
   },
@@ -36,15 +36,19 @@ const MyComponent = () => {
 };
 
 const Debugging = () => {
+  // A snapshot of the entire Recoil state
   const snapshot = useRecoilSnapshot();
   const loading = useMemo(() => {
     const out: string[] = [];
+
+    // Interate over each snapshot node and collect the nodes that are currently loading in this example
     for (const node of snapshot.getNodes_UNSTABLE()) {
       const loadable = snapshot.getLoadable(node);
-      if (loadable.state === "loading") {
+      if (loadable.state === "loading" && node.key.startsWith('debugging__')) {
         out.push(node.key);
       }
     }
+
     return out;
   }, [snapshot]);
 

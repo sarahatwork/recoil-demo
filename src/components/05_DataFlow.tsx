@@ -2,16 +2,18 @@ import { atom, DefaultValue, selector, useRecoilState } from "recoil";
 import moment from "moment";
 
 const dateState = atom({
-  key: "dateDataFlow",
+  key: "date_example05",
   default: Date.now(),
 });
 
 const dateDisplayState = selector({
-  key: "dateDisplay",
+  key: "dateDisplay_example05",
   get: ({ get }) => {
     return moment(get(dateState)).format("YYYY-MM-DD");
   },
   set: ({ set }, newVal) => {
+    // When the user selects a date in the format YYYY-MM-DD via the form input,
+    // we update the `dateState` atom
     set(
       dateState,
       newVal instanceof DefaultValue ? newVal : moment(newVal).unix() * 1000

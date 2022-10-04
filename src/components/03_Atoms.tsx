@@ -2,11 +2,12 @@ import { useState } from "react";
 import { atom, useRecoilState } from "recoil";
 
 const magentaState = atom({
-  key: "magentaAtoms",
+  key: "magenta_example03",
   default: 0,
 });
 
 const Atoms = () => {
+  // Same API!
   const [numCyanClicks, setNumCyanClicks] = useState(0);
   const [numMagentaClicks, setNumMagentaClicks] = useRecoilState(magentaState);
 
@@ -17,7 +18,7 @@ const Atoms = () => {
         style={{ backgroundColor: "cyan" }}
         onClick={() => setNumCyanClicks((n) => n + 1)}
       >
-        Click
+        React useState
       </button>
       <hr />
       <div>Clicks: {numMagentaClicks}</div>
@@ -25,7 +26,7 @@ const Atoms = () => {
         style={{ backgroundColor: "magenta" }}
         onClick={() => setNumMagentaClicks((n) => n + 1)}
       >
-        Click
+        Recoil Atom
       </button>
     </>
   );

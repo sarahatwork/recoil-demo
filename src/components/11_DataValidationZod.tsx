@@ -1,23 +1,26 @@
 import { Suspense } from "react";
 import { selector, useRecoilValue } from "recoil";
-import refine from "@recoiljs/refine";
+import { z } from "zod";
 
-const Starship = refine.object({
-  name: refine.string(),
+const Starship = z.object({
+  name: z.string(),
 });
 
-const StartshipResults = refine.object({
-  results: refine.array(Starship),
+const StartshipResults = z.object({
+  results: z.array(Starship),
 });
 
 const starshipsState = selector({
-  key: "starshipsDataValidationRefine",
+  key: "starshipDataValidationZod",
   get: async () => {
     const res = await fetch("https://swapi.dev/api/starships");
     const data = await res.json();
-    return refine.assertion(StartshipResults)(data).results;
+    // No more typecasting - Zod will throw an error if the data is not of the expected structure
+    return StartshipResults.parse(data).results;
   },
 });
+
+// 💪 Learn more about Zod at https://www.totaltypescript.com/tutorials/zod
 
 const MyComponent = () => {
   const starships = useRecoilValue(starshipsState);
@@ -31,7 +34,7 @@ const MyComponent = () => {
   );
 };
 
-const DataValidationRefine = () => {
+const DataValidationZod = () => {
   return (
     <Suspense fallback={"Loading..."}>
       <MyComponent />
@@ -39,4 +42,4 @@ const DataValidationRefine = () => {
   );
 };
 
-export default DataValidationRefine;
+export default DataValidationZod;

@@ -1,25 +1,22 @@
 import { Suspense } from "react";
 import { selector, useRecoilValue } from "recoil";
-import { z } from "zod";
 
-const Starship = z.object({
-  name: z.string(),
-});
-
-const StartshipResults = z.object({
-  results: z.array(Starship),
-});
+interface Starship {
+  name: string;
+}
 
 const starshipsState = selector({
-  key: "starshipDataValidationZod",
+  key: "starships_example02",
   get: async () => {
     const res = await fetch("https://swapi.dev/api/starships");
     const data = await res.json();
-    return StartshipResults.parse(data).results;
+    return data.results as Starship[];
   },
 });
 
 const MyComponent = () => {
+  // We don't have to check that this value exists -
+  // the fact we are inside MyComponent means the fetch is complete!
   const starships = useRecoilValue(starshipsState);
 
   return (
@@ -31,7 +28,7 @@ const MyComponent = () => {
   );
 };
 
-const DataValidationZod = () => {
+const AsyncFetching = () => {
   return (
     <Suspense fallback={"Loading..."}>
       <MyComponent />
@@ -39,4 +36,4 @@ const DataValidationZod = () => {
   );
 };
 
-export default DataValidationZod;
+export default AsyncFetching;

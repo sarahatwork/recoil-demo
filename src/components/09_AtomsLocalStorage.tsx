@@ -6,14 +6,20 @@ const magentaState = atom({
   default: 0,
   effects: [
     ({ onSet, setSelf }) => {
+      // Set the initial value from localStorage
       const localStorageCount = localStorage.getItem("magentaCount");
       setSelf(localStorageCount ? JSON.parse(localStorageCount) : 0);
+
+      // When the value changes, update localStorage
       onSet((newVal) =>
         localStorage.setItem("magentaCount", JSON.stringify(newVal))
       );
     },
   ],
 });
+
+// 💁🏻‍♀️ See the Recoil Sync package for more advanced state synchronization
+// to URLs or localStorage: https://recoiljs.org/docs/recoil-sync/introduction
 
 const AtomsLocalStorage = () => {
   const [numCyanClicks, setNumCyanClicks] = useState(0);

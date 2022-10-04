@@ -11,7 +11,7 @@ const MyComponent = () => {
     throw threeSecondPromise;
   }
 
-  return <>Not loading!</>;
+  return <>Done loading!</>;
 };
 
 const ThrowPromise = () => {
