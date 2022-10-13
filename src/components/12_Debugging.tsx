@@ -43,8 +43,8 @@ const Debugging = () => {
 
     // Interate over each snapshot node and collect the nodes that are currently loading in this example
     for (const node of snapshot.getNodes_UNSTABLE()) {
-      const loadable = snapshot.getLoadable(node);
-      if (loadable.state === "loading" && node.key.startsWith('debugging__')) {
+      const info = snapshot.getInfo_UNSTABLE(node);
+      if (info.loadable?.state !== "hasValue" && node.key.startsWith('debugging__')) {
         out.push(node.key);
       }
     }
